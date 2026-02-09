@@ -14,7 +14,7 @@ public class LibroController {
     @Autowired
     private LibroRepository libroRepository;
 
-    // LISTAR LIBROS
+    // LISTAR LIBROS (INICIO)
     @GetMapping({"/", "/listaLibros"})
     public String inicio(Model model) {
         model.addAttribute("listaLibros", libroRepository.findAll());
@@ -37,13 +37,12 @@ public class LibroController {
 
     // BUSCAR LIBROS
     @GetMapping("/buscar")
-    public String buscarLibros(@RequestParam("criterio") String criterio, Model model) {
+    public String buscarLibros(@RequestParam(required = false) String criterio, Model model) {
 
         if (criterio == null || criterio.trim().isEmpty()) {
             model.addAttribute("listaLibros", libroRepository.findAll());
         } else {
-            model.addAttribute("listaLibros",
-                    libroRepository.buscarPorTodo(criterio));
+            model.addAttribute("listaLibros", libroRepository.buscarPorTodo(criterio));
         }
 
         return "listaLibros";
