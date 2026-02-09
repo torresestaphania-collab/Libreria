@@ -1,14 +1,13 @@
-# Imagen base con Java 21 (recomendada para Spring Boot 3)
-FROM eclipse-temurin:21-jdk-alpine
-
-# Directorio de trabajo dentro del contenedor
+# Etapa 1: construir el JAR
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copiar el JAR generado por Maven
-COPY target/libreria-0.0.1-SNAPSHOT.jar app.jar
-
-# Exponer el puerto de la aplicación
+# Etapa 2: ejecutar la app
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
